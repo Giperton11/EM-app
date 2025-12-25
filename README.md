@@ -1,10 +1,11 @@
-Markdown# Effective Mobile — Тестовое задание 🚀
-
-Markdown# Effective Mobile — Тестовое задание
+# Effective Mobile — Тестовое задание 🚀
 
 Простое веб-приложение с backend на Python и Nginx в качестве reverse proxy, полностью контейнеризированное с помощью Docker и Docker Compose.
+___
 
 ## Архитектура
+
+```text
 [Клиент / curl]
 │
 ▼   http://localhost
@@ -19,8 +20,9 @@ Markdown# Effective Mobile — Тестовое задание
 │  (порт 8080)        │    "Hello from Effective Mobile!"
 └─────────────────────┘
 (только внутри docker-сети app-network)
-text## Используемые технологии
 
+## Используемые технологии
+```text
 - Python 3.12 (alpine)
 - http.server (стандартная библиотека)
 - Nginx (stable-alpine)
@@ -32,23 +34,37 @@ text## Используемые технологии
 
 ```bash
 # 1. Клонировать репозиторий
-git clone https://github.com/almazbek/EM-app.git
+git clone https://github.com/пшзукещт11/EM-app.git
 cd EM-app
 
+```bash
 # 2. (Опционально) настроить порт в .env
 cp .env.example .env
 
-# 3. Запустить
+```bash
+# 3. Запустить с сборкой
 docker compose up -d --build
 
+```bash
 # 4. Проверить
 curl http://localhost
-Ожидаемый ответ:
-textHello from Effective Mobile!
-Остановка
-Bashdocker compose down
-Структура проекта
-text├── backend/
+
+## Ожидаемый ответ:
+
+```text
+Hello from Effective Mobile!
+
+## Остановка приложения
+```bash
+docker compose down
+
+## Для полного удаления очистки
+```bash
+docker-compose down -v --rmi all
+
+## Структура проекта
+```text
+├── backend/
 │   ├── Dockerfile
 │   └── app.py
 ├── nginx/
@@ -59,3 +75,33 @@ text├── backend/
 ├── docker-compose.yml
 ├── .gitignore
 └── README.md
+
+## Полезные команды для диагностики
+
+```bash
+# Состояние контейнеров
+docker compose ps
+
+```bash
+# Логи nginx (последние 30 строк)
+docker compose logs nginx | tail -n 30
+
+```bash
+# Логи backend
+docker compose logs backend
+
+```bash
+# Проверка связи nginx → backend
+docker compose exec nginx curl -v http://backend:8080
+
+```bash
+# Перезапуск с полной пересборкой
+docker compose down
+docker compose up -d --build --force-recreate
+
+
+## Расширение проекта
+Для расширения функциональности:
+1. Добавьте новые сервисы в **docker-compose.yml**
+2. Настройте маршрутизацию в **nginx.conf**
+3. Добавьте переменные окружения в **.env**
