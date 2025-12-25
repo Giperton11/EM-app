@@ -3,28 +3,28 @@
 Простое веб-приложение с backend на Python и Nginx в качестве reverse proxy, полностью контейнеризированное с помощью Docker и Docker Compose.
 
 ## Архитектура
-[ Клиент / curl ]
-        |
-        |  HTTP-запрос
-        v
-┌─────────────────────────┐
-│         Nginx           │
-│   reverse proxy         │
-│   порт 80 (host)        │
-└───────────┬─────────────┘
-            |
-            | proxy_pass http://backend:8080/
-            v
-┌─────────────────────────┐
-│        Backend          │
-│  Python HTTP-сервер     │
-│  порт 8080              │
-│  "Hello from Effective  │
-│   Mobile!"              │
-└─────────────────────────┘
-   (доступен только внутри
-    docker-сети app-network)
+## Архитектура
 
+```text
+[Клиент / curl]
+          │
+          ▼   http://localhost
+┌────────────────────────────┐
+│          Nginx             │
+│   (порт 80 на хосте)       │
+│     reverse proxy          │
+└──────────────┬─────────────┘
+               │
+               ▼ proxy_pass http://backend:8080/
+               
+┌────────────────────────────┐
+│          Backend           │
+│   Python HTTP-сервер       │
+│       порт 8080            │
+│ "Hello from Effective Mobile!" │
+└────────────────────────────┘
+
+(Backend доступен только внутри docker-сети app-network)
 ## Используемые технологии
 
 - Python 3.12 (alpine)-(http.server)
