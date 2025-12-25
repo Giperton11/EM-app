@@ -1,0 +1,59 @@
+version: '3.8'
+
+# Определяем сервисы
+services:
+  # Backend сервис
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        - PYTHON_TAG=${PYTHON_IMAGE_TAG:-3.12-alpine}
+    container_name: backend-service
+    # Не публикуем порт наружу, доступ только внутри сети Docker
+    expose:
+      - "${BACKEND_PORT:-8080}"
+    # Используем отдельную сеть
+    networks:
+      - app-network
+    # Перезапуск при сбое
+    restart: unless-stopped
+    # Логирование
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Переменные окружения (можно расширить)
+    environment:
+      - PYTHONUNBUFFERED=1
+      - BACKEND_PORT=${BACKEND_PORT:-8080}
+  # Nginx сервис
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      args:
+        - NGINX_TAG=${NGINX_IMAGE_TAG:-stable-alpine}
+    container_name: nginx-service
+    # Публикуем только порт 80 nginx на хосте
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    # Зависимость от backend
+    depends_on:
+      - backend
+    # Используем ту же сеть
+    networks:
+      - app-network
+    # Перезапуск при сбое
+    restart: unless-stopped
+    # Логирование
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+# Определяем сеть
+networks:
+  app-network:
+    driver: bridge

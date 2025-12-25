@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs & temp
+*.log
+*.bak
+*.tmp
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Misc
+.DS_Store
